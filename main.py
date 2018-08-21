@@ -4,6 +4,9 @@ import fire
 import ltp
 import myDict
 from tqdm import tqdm
+from config import Env
+
+options = Env()
 
 # Global Variable
 DICT_DIR = 'dict'
@@ -12,7 +15,7 @@ DATA_DIR = 'data'
 def dictGen(**kwargs):
     for k_, v_ in kwargs.items():
         setattr(options, k_, v_)
-    
+
     myDict.gen(DICT_DIR)
 
 def skipgram(**kwargs):
@@ -37,7 +40,7 @@ def skipgram(**kwargs):
         tmpSents = list(map(lambda x: ' '.join(x), wordLists))
         tmpStr = '\n'.join(tmpSents)
         f.write(tmpStr)
-        os.system('./fasttext skipgram -input tmp.txt -output wordvec/skipgram -dim 300 -epoch 1000 -ws 10 -lrUpdateRate 100 -thread 8')
+        os.system(f'./fasttext skipgram -input tmp.txt -output {options.sgm_result}/skipgram -dim {options.word_dim} -epoch {options.sgm_epochs} -ws {options.sgm_ws} -lrUpdateRate {options.sgm_lr_update_rate} -thread {options.thread}')
         os.remove('./tmp.txt')
 
 if __name__ == '__main__':
