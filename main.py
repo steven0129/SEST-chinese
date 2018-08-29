@@ -61,8 +61,18 @@ def SEST(**kwargs):
     print('斷詞中...')
     wordLists = list(map(W.split, tqdm(sents)))
     
-    print(wordLists[0])
-    print(S.parse(wordLists[0]))
+    print('依存關係分析中...')
+    dependencies = list(map(S.parse, tqdm(wordLists)))
+    
+    for idx, dep in enumerate(dependencies):
+        nums = []
+        relations = []
+
+        for index, (head, relation) in enumerate(dep):
+            nums.append(f'{head}->{index + 1}')
+            relations.append(relation)
+
+        print(' '.join(wordLists[idx]) + ',' + ' '.join(nums) + ',' + ' '.join(relations))
 
 if __name__ == '__main__':
   fire.Fire()
