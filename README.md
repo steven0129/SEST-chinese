@@ -12,6 +12,7 @@ unzip ltp_data_v3.4.0.zip && rm ltp_data_v3.4.0.zip
 
 ```
 python main.py skipgram
+python main.py SEST
 ```
 
 ## Trouble Shooting
