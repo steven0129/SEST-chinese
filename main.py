@@ -3,6 +3,7 @@ import os
 import fire
 import ltp
 import myDict
+import csv
 from tqdm import tqdm
 from config import Env
 
@@ -64,15 +65,18 @@ def SEST(**kwargs):
     print('依存關係分析中...')
     dependencies = list(map(S.parse, tqdm(wordLists)))
     
-    for idx, dep in enumerate(dependencies):
-        nums = []
-        relations = []
+    with open('sentvec/relations.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
 
-        for index, (head, relation) in enumerate(dep):
-            nums.append(f'{head}->{index + 1}')
-            relations.append(relation)
+        for idx, dep in enumerate(dependencies):
+            nums = []
+            relations = []
 
-        print(' '.join(wordLists[idx]) + ',' + ' '.join(nums) + ',' + ' '.join(relations))
+            for index, (head, relation) in enumerate(dep):
+                nums.append(f'{head}->{index + 1}')
+                relations.append(relation)
+
+            writer.writerow([' '.join(wordLists[idx]), ' '.join(nums), ' '.join(relations)])
 
 if __name__ == '__main__':
   fire.Fire()
