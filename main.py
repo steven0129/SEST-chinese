@@ -78,5 +78,16 @@ def SEST(**kwargs):
 
             writer.writerow([' '.join(wordLists[idx]), ' '.join(nums), ' '.join(relations)])
 
+    with open('sentvec/group.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        writer.writerow(['head編號', 'index編號', 'head詞', 'index詞', 'Relation'])
+
+        for idx, dep in enumerate(dependencies):
+            for index, (head, relation) in enumerate(dep):
+                words = wordLists[idx]
+                headWord = words[head - 1] if head != 0 else 'ROOT'
+                indexWord = words[index]
+                writer.writerow([head, index + 1, headWord, indexWord, relation])
+
 if __name__ == '__main__':
   fire.Fire()

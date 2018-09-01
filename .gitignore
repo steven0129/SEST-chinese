@@ -2,3 +2,4 @@ __pycache__/
 ltp_data_v3.4.0/
 *.vec
 *.bin
+sentvec/*.csv
