@@ -89,5 +89,11 @@ def SEST(**kwargs):
                 indexWord = words[index]
                 writer.writerow([head, index + 1, headWord, indexWord, relation])
 
+def run_rnn(**kwargs):
+    for k_, v_ in kwargs.items():
+        setattr(options, k_, v_)
+
+    
+
 if __name__ == '__main__':
   fire.Fire()
