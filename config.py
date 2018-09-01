@@ -5,3 +5,4 @@ class Env(object):
     sgm_result = 'wordvec'  # Direction of result
     sgm_ws = 5  # Size of the context window
     sgm_lr_update_rate = 100  # Change the rate of updates for the learning rate
+    cuda = True

@@ -1,11 +1,13 @@
 #coding=utf8
 import os
+import torch
 import fire
 import ltp
 import myDict
 import csv
 from tqdm import tqdm
 from config import Env
+from RNN import BiLSTM
 
 options = Env()
 
@@ -89,10 +91,37 @@ def SEST(**kwargs):
                 indexWord = words[index]
                 writer.writerow([head, index + 1, headWord, indexWord, relation])
 
+def preprocess(**kwargs):
+    for k_, v_ in kwargs.items():
+        setattr(options, k_, v_)
+
+    heads = {}
+    indexes = {}
+    relations = {}
+
+    with open(f'{DATA_DIR}/sky_dragon_relations.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            if(heads.get(row[0]) == None):
+                heads[row[0]] = []
+                indexes[row[0]] = []
+                relations[row[0]] = []
+
+            heads[row[0]].append(row[1])
+            indexes[row[0]].append(row[2])
+            relations[row[0]].append(row[3])
+
+    with open(f'{DATA_DIR}/preprocess.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        for idx, (key, vals) in enumerate(relations.items()):
+            print(f'{idx}, {key}')
+            writer.writerow([idx, key])
+
 def run_rnn(**kwargs):
     for k_, v_ in kwargs.items():
         setattr(options, k_, v_)
 
+    device = torch.device('cuda' if torch.cuda.is_available() and options.cuda == True else 'cpu')
     
 
 if __name__ == '__main__':
