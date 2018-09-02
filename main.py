@@ -91,6 +91,14 @@ def SEST(**kwargs):
                 indexWord = words[index]
                 writer.writerow([head, index + 1, headWord, indexWord, relation])
 
+    with open('sentvec/dependencies.txt', 'w') as f:
+        for dep in dependencies:
+            nums = []
+            for head, relation in dep:
+                nums.append(f'{head}->{index + 1}')
+            
+            f.write(' '.join(nums) + '\n')
+
 def preprocess(**kwargs):
     for k_, v_ in kwargs.items():
         setattr(options, k_, v_)
