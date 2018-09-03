@@ -15,6 +15,10 @@ python main.py skipgram
 python main.py SEST
 ```
 
+## Visulization
+
+![](./sentvec/viz.jpg)
+
 ## Trouble Shooting
 
 ### gcc: error trying to exec 'cc1plus': execvp: No such file or directory?
