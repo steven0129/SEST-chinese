@@ -13,7 +13,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from config import Env
-from RNN import BiLSTM
 
 options = Env()
 
@@ -51,12 +50,15 @@ def skipgram(**kwargs):
         
         for words in wordLists:
             tmpWords = words
-            tmpWords.append('<end>')
-            if len(words) <= STRING_LEN + 1:
-                for i in range(STRING_LEN + 1 - len(tmpWords)):
-                    tmpWords.append('<empty>')
+            if len(tmpWords) <= STRING_LEN:
+                extendedList = ['<end>']
+                for i in range(STRING_LEN - len(tmpWords)):
+                    extendedList.append('<empty>')
+
+                tmpWords.extend(extendedList)
             else:
-                tmpWords = tmpWords[:STRING_LEN + 1]
+                tmpWords = tmpWords[:STRING_LEN]
+                tmpWords.append('<end>')
 
             tmpWordLists.append(tmpWords)
 
@@ -114,11 +116,23 @@ def SEST(**kwargs):
 
     with open('sentvec/dependencies.txt', 'w') as f:
         for dep in dependencies:
-            nums = []
-            for index, (head, relation) in enumerate(dep):
-                nums.append(f'{head}->{index + 1}')
+            relations = []
+            STRING_LEN = 30
 
-            f.write('<start> ' + ' '.join(nums) + ' <end>' + '\n')
+            for index, (head, relation) in enumerate(dep):
+                relations.append(f'{head}->{index + 1}')
+
+            if len(relations) <= STRING_LEN:
+                extendedList = ['<end>']
+                for i in range(STRING_LEN - len(relations)):
+                    extendedList.append('<empty>')
+
+                relations.extend(extendedList)
+            else:
+                relations = relations[:30]
+                relations.append('<end>')
+            
+            f.write('<start> ' + ' '.join(relations) + '\n')
 
 def dep_skipgram(**kwargs):
     for k_, v_ in kwargs.items():
@@ -151,13 +165,6 @@ def visualization(**kwargs):
     # Plotting words and their vector representations
     plt.scatter(U[:, 0], U[:, 1])
     plt.savefig('sentvec/viz.jpg')
-
-def run_early_fusion_lstm(**kwargs):
-    for k_, v_ in kwargs.items():
-        setattr(options, k_, v_)
-
-    device = torch.device('cuda' if torch.cuda.is_available() and options.cuda == True else 'cpu')
-
 
 if __name__ == '__main__':
   fire.Fire()
