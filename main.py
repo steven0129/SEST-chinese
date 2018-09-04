@@ -46,7 +46,22 @@ def skipgram(**kwargs):
     wordLists = list(map(W.split, tqdm(sents)))
 
     with open('tmp.txt', 'w') as f:
-        tmpSents = list(map(lambda x: ' '.join(x), wordLists))
+        tmpWordLists = []
+        STRING_LEN = 30
+        
+        for words in wordLists:
+            tmpWords = words
+            tmpWords.append('<end>')
+            if len(words) <= STRING_LEN + 1:
+                for i in range(STRING_LEN + 1 - len(tmpWords)):
+                    tmpWords.append('<empty>')
+            else:
+                tmpWords = tmpWords[:STRING_LEN + 1]
+
+            tmpWordLists.append(tmpWords)
+
+        tmpSents = list(map(lambda x: ' '.join(x), tmpWordLists))
+        tmpSents = list(map(lambda x: f'<start> {x}', tmpSents))
         tmpStr = '\n'.join(tmpSents)
         f.write(tmpStr)
         os.system(f'./fasttext skipgram -input tmp.txt -output {options.sgm_result}/skipgram -dim {options.word_dim} -epoch {options.sgm_epochs} -ws {options.sgm_ws} -lrUpdateRate {options.sgm_lr_update_rate} -thread {options.thread}')
@@ -105,10 +120,11 @@ def SEST(**kwargs):
 
             f.write('<start> ' + ' '.join(nums) + ' <end>' + '\n')
 
-    os.system(f'./fasttext skipgram -input sentvec/dependencies.txt -output {options.sest_result}/skipgram -dim {options.sest_dim} -epoch {options.sest_epochs} -ws {options.sest_ws} -lrUpdateRate {options.sest_lr_update_rate} -thread {options.thread}')
+def dep_skipgram(**kwargs):
+    for k_, v_ in kwargs.items():
+        setattr(options, k_, v_)
 
-def Relations(**kwrags):
-    
+    os.system(f'./fasttext skipgram -input sentvec/dependencies.txt -output {options.sest_result}/sest_skipgram -dim {options.sest_dim} -epoch {options.sest_epochs} -ws {options.sest_ws} -lrUpdateRate {options.sest_lr_update_rate} -thread {options.thread}')
 
 def visualization(**kwargs):
     for k_, v_ in kwargs.items():
@@ -136,7 +152,7 @@ def visualization(**kwargs):
     plt.scatter(U[:, 0], U[:, 1])
     plt.savefig('sentvec/viz.jpg')
 
-def run_lstm(**kwargs):
+def run_early_fusion_lstm(**kwargs):
     for k_, v_ in kwargs.items():
         setattr(options, k_, v_)
 

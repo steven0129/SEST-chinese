@@ -4,3 +4,4 @@ ltp_data_v3.4.0/
 *.bin
 sentvec/*.csv
 sentvec/*.txt
+tmp.txt
