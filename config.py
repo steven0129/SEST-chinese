@@ -7,7 +7,7 @@ class Env(object):
     sgm_lr_update_rate = 100  # Change the rate of updates for the learning rate
     
     sest_dim = 300
-    sest_epochs = 5000
+    sest_epochs = 7000
     sest_result = 'sentvec'
     sest_ws = 5
     sest_lr_update_rate = 100
